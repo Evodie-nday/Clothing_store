@@ -7,12 +7,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -25,16 +29,21 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    @Schema(description= "full_name", maxLength = 50)
-    private String fullName;
+    @Schema(description= "first_name", maxLength = 50)
+    private String firstName;
     @NotBlank
-    @Schema(description = "userName", maxLength= 50)
-    private String userName;
+    @Schema(description = "last_name", maxLength = 50)
+    private String lastName;
     @NotBlank
     @Schema(description = "email", example= "example@gmail.com")
     @Column(unique = true)
     private String email;
     private String password;
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime created;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
     @NotBlank
     @Column(name = "role")
     private String role = "ROLE_USER"; //default role
@@ -46,7 +55,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername(){
-        return this.userName;
+        return this.email;
     }
     @Override
     public boolean isAccountNonExpired() {
